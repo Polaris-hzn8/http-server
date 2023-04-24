@@ -11,12 +11,16 @@
 #define MAXEVENTS 1024
 
 #include <stdio.h>
-#include "sys/socket.h"
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/epoll.h>
 #include <fcntl.h>
+#include <string.h>
+#include <strings.h>
+#include <errno.h>
+#include <unistd.h>
 
 #endif
