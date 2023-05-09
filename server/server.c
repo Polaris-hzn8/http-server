@@ -79,36 +79,6 @@ int recvHttpRequest(int cfd, int epollfd) {
 	return 0;
 }
 
-/**
- * @brief 在接受到http消息之后 进行具体的解析操作
- * 
- * @param line 请求行字符串内容
- * @param cfd 请求行解析后 需要将数据发回给客户端
- * @return int 
- */
-int parseHttpRequestLine(const char* line, int cfd) {
-	/* 请求行内容：请求的方式POST|GET 客户端请求的静态资源 客户端使用的HTTP协议的版本 */	
-	/* sprintf: 对字符串进行格式化 */
-	/* sscanf: 对格式化的字符串进行拆分 */
-	//1.解析请求行
-	char method[12];//GTE|POST
-	char path[1024];//请求服务器静态资源的路径
-	sscanf(line, "%[^ ] %[^ ]", method, path);
-	if (strcasecmp(method, "get") != 0) return -1;//不区分大小写进行字符串比较
-	
-	//2.处理客户端请求静态资源的命令
-	char *filepath = NULL;
-	if (strcmp(path, "/") == 0) filepath = "./";
-	else filepath = path + 1;
-
-	//3.判断访问的资源是文件 or 目录
-	
-
-
-
-	return 0;
-}
-
 
 /**
  * @brief 

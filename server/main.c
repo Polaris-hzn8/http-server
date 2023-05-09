@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	//1.切换服务器的工作路径
+	//1.切换服务器的工作路径（设置资源根目录）
 	chdir(argv[2]);
 	
 	//2.建立用于监听的套接字
@@ -23,8 +23,6 @@ int main(int argc, char *argv[]) {
 
 	//3.启动服务器程序
 	
-
-
 
 
 	return 0;
