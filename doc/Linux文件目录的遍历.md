@@ -1,40 +1,8 @@
-# hot
+# Linux文件目录的遍历
 
 ---
 
-### 1.url请求信息截取
-
-- 利用格式化输入sscanf函数实现
-
-- 函数原型：`sscanf(const char *str, const char *format, ...)`
-- 主要功能：将参数str的字符串根据参数format字符串来转换并格式化数据，转换后的结果存于对应的参数中，
-    - 根据格式从字符串中提取数据，如从字符串中取出整数、浮点数和字符串等。
-    - 取<font color='#BAOC2F'>指定长度</font>的字符串
-    - 取到<font color='#BAOC2F'>指定字符为止</font>的字符串
-    - 取仅<font color='#BAOC2F'>包含指定字符集</font>的字符串
-    - 取到<font color='#BAOC2F'>指定字符集为止</font>的字符串
-- 举例：从 `http://www.baidu.com:1234` 中分别获取传输协议、网站域名、端口等信息
-
-```cpp
-#include <stdio.h>
-
-int main() {
-    const char *str = "https://www.baidu.com:20000";
-    char protocal[32] = {0};
-    char host[128] = {0};
-    char port[8] = {0};
-    sscanf(str, "%[^:]://%[^:]:%[1-9]", protocal, host, port);
-
-    printf("protocal : %s\n", protocal);
-    printf("host : %s\n", host);
-    printf("port : %s\n", port);
-    return 0;
-}
-```
-
-
-
-### 2.文件目录的遍历
+### 1.api
 
 ```cpp
 DIR *opendir(const char *name);//打开目录
@@ -57,7 +25,7 @@ struct dirent {
 int closedir(DIR *dirp);// 关闭目录, 参数是 opendir() 的返回值
 ```
 
-#### （1）遍历单层目录
+### 2.遍历单层目录
 
 ```cpp
 // 打开目录
@@ -99,7 +67,7 @@ int getMp3Num(const char* path) {
 }
 ```
 
-#### （2）遍历多层目录
+### 3.遍历多层目录
 
 递归方式进行遍历，递归结束的条件：遍历的文件如果不是目录类型就结束递归。
 
@@ -135,7 +103,7 @@ int getMp3Num(const char* path) {
 
 
 
-#### （3）scandir函数
+### 4.scandir函数
 
 scandir() 函数进行目录的遍历，只遍历指定目录，不进入到子目录中进行递归遍历，参数涉及到三级指针和回调函数的使用。
 
@@ -219,6 +187,12 @@ int num = scandir(argv[1], &namelist, isMp3, alphasort);
 
 - 数组元素的个数就是遍历的目录中的文件个数，
 - 数组的每个元素都是指针类型: struct dirent *, 指针指向的地址是有 scandir () 函数分配的，因此在使用完毕之后需要释放内存。
+
+
+
+
+
+
 
 
 
