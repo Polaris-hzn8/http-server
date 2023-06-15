@@ -10,8 +10,11 @@
 
 #include "head.h"
 
-int acceptClient(int lfd, int epollfd);//与客户端建立连接
-int recvHttpRequest(int cfd, int epollfd);//接受并处理http消息
-int epollRun(int lfd);//启动epoll
+//与客户端建立连接
+int acceptClient(int lfd, int epollfd);
+//接受并处理http消息
+int recvHttpRequest(int cfd, int epollfd);
+//启动epoll
+int epollRun(int lfd);
 
 #endif

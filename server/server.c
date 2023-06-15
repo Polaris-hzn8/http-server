@@ -9,13 +9,10 @@
 #include "head.h"
 
 
-/**
- * @brief 接受并处理客户端创立的新连接
- * 
- * @param lfd 用于监听的文件描述符 
- * @param epollfd epoll_create创建的文件描述符
- * @return int 
- */
+/// @brief 接受并处理客户端创立的新连接 
+/// @param lfd 用于监听的文件描述符 
+/// @param epollfd epoll_create创建的文件描述符 
+/// @return 
 int acceptClient(int lfd, int epollfd) {
 	int cfd;
 	// 1.建立连接 NULL 传出参数用于保存客户端的ip与端口信息 addrsock_in类型 
@@ -38,18 +35,17 @@ int acceptClient(int lfd, int epollfd) {
 	return 0;
 }
 
-/**
- * @brief 接受并处理http消息（http请求解析）
- * 将客户端发送的数据都接受 并写入到本地
- * @param cfd 用于通信的文件描述符
- * @param epollfd 若客户端发送的数据已发送完毕 并断开了连接 则需要将通信的fd文件描述符从 epoll树上删除
- * @return int 
- */
+
+/// @brief 接受并处理http消息（http请求解析） 将客户端发送的数据都接受 并写入到本地
+/// @param cfd 用于通信的文件描述符 
+/// @param epollfd 若客户端发送的数据已发送完毕 并断开了连接 则需要将通信的fd文件描述符从 epoll树上删除 
+/// @return int
 int recvHttpRequest(int cfd, int epollfd) {
 	int index = 0;//当前已经写入消息的长度
 	char buff[1024] = {0};//临时缓存
 	char dest[4096] = {0};//数据的最终存储位置
 	int len = 0;//每次接受到消息数据的长度
+
 	/* 开始接受并处理http请求的消息 */
 	/* 由于用于通信的文件描述符connectfd已经被设置为了 边缘非阻塞模式 则poll检测到文件描述符对应的读事件之后 只会进行一次通知 */
 	/* 因此需要在得到epoll通知之后 一次性将所有的数据进行读取完成 */
@@ -80,11 +76,10 @@ int recvHttpRequest(int cfd, int epollfd) {
 }
 
 
-/**
- * @brief 
- * 启动epoll进行文件描述符监听
- * @param lfd epoll监听的文件描述符
- */
+
+/// @brief 启动epoll进行文件描述符监听
+/// @param lfd epoll监听的文件描述符 
+/// @return 
 int epollRun(int lfd) {
 	//1.创建epoll实例（创建epoll红黑树的根节点）
 	int epollfd;
@@ -123,4 +118,6 @@ int epollRun(int lfd) {
 		}
 	}
 }
+
+
 
