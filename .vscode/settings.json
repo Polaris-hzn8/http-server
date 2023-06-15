@@ -4,6 +4,8 @@
         "in.h": "c",
         "stdio.h": "c",
         "socket.h": "c",
-        "errno.h": "c"
+        "errno.h": "c",
+        "stat.h": "c",
+        "httptool.h": "c"
     }
 }
