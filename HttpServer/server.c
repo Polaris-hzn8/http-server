@@ -13,22 +13,31 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <ctype.h>
 #include <assert.h>
 #include <string.h>
 #include <dirent.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <pthread.h>
 #include <strings.h>
 #include <arpa/inet.h>
 #include <sys/epoll.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
 #include <sys/sendfile.h>
 #include "server.h"
 
 #define LOGOUT(fmt, ...) do { printf(fmt, ##__VA_ARGS__); fflush(stdout); } while(0)
 
 #define RES_PAGE_NOT_FOUNUD "404.html"
+
+typedef struct thread_params_st
+{
+	int fd;
+	int epfd;
+	pthread_t tid;
+}THREAD_PARAMS, *PTHREAD_PARAMS;
 
 int init_listen_fd(unsigned short port)
 {
@@ -87,12 +96,15 @@ int epoll_run(int lfd)
 		int num = epoll_wait(epfd, evs, size, -1);
 		for (int i = 0; i < num; ++i) {
 			int fd = evs[i].data.fd;
+			THREAD_PARAMS* p_params = (THREAD_PARAMS*)malloc(sizeof(THREAD_PARAMS));
+			p_params->fd = fd;
+			p_params->epfd = epfd;
 			if (fd == lfd) {
 				/* 连接建立 */
-				accept_connect(lfd, epfd);
+				pthread_create(&p_params->tid, NULL, thread_accept_connect, p_params);
 			} else {
 				/* 数据收发 */
-				recv_http_request(fd, epfd);
+				pthread_create(&p_params->tid, NULL, thread_recv_http_request, p_params);
 			}
 		}
 	}
@@ -100,12 +112,16 @@ int epoll_run(int lfd)
 	return 0;
 }
 
-int accept_connect(int lfd, int epfd)
+void* thread_accept_connect(void* arg)
 {
+	THREAD_PARAMS* params = (THREAD_PARAMS*)arg;
+	int lfd = params->fd;
+	int epfd = params->epfd;
+
 	int cfd = accept(lfd, NULL, NULL);
 	if (cfd == -1) {
 		perror("accept failed");
-		return -1;
+		return;
 	}
 
 	int flag = fcntl(cfd, F_GETFL);
@@ -118,15 +134,21 @@ int accept_connect(int lfd, int epfd)
 	int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, cfd, &ev);
 	if (ret == -1) {
 		perror("epoll_ctl failed");
-		return -1;
+		return;
 	}
 
-	LOGOUT("client[%d] connected.\n", cfd);
-	return 0;
+	LOGOUT("thread_accept_connect end thread_id[%d] client[%d] connected.\n", params->tid, cfd);
+	free(params);
+
+	return;
 }
 
-int recv_http_request(int cfd, int epfd)
+void* thread_recv_http_request(void* arg)
 {
+	THREAD_PARAMS* params = (THREAD_PARAMS*)arg;
+	int cfd = params->fd;
+	int epfd = params->epfd;
+
 	int idx = 0;
 	int len = 0;
 	char buff[4096] = { 0 };
@@ -147,15 +169,18 @@ int recv_http_request(int cfd, int epfd)
 		parse_request_line(buff, cfd);
 	} else if (len == 0) {
 		/* 连接断开 */
-		LOGOUT("client[%d] disconnecte.d\n", cfd);
+		LOGOUT("client[%d] disconnecte.\n", cfd);
 		epoll_ctl(epfd, EPOLL_CTL_DEL, cfd, NULL);
 		close(cfd);
 	} else {
 		perror("recv failed");
-		return -1;
+		return;
 	}
 
-	return 0;
+	LOGOUT("thread_recv_http_request end thread_id[%d] client cfd[%d].\n", params->tid, cfd);
+	free(params);
+
+	return;
 }
 
 int parse_request_line(const char* line, int cfd)
@@ -165,10 +190,8 @@ int parse_request_line(const char* line, int cfd)
 	sscanf(line, "%[^ ] %[^ ]", req_method, req_path);
 	if (strcasecmp(req_method, "get") != 0)
 		return -1;
-	 
-	LOGOUT("before decode req_path[%s]\n", req_path);
+	
 	decode_str(req_path, req_path);
-	LOGOUT("after decode req_path[%s]\n", req_path);
 
 	char* req_file = NULL;
 	if (strcmp(req_path, "/") == 0)

@@ -14,9 +14,9 @@
 
 int init_listen_fd(unsigned short port);
 
-int epoll_run(int lfd);
-int accept_connect(int lfd, int epfd);
-int recv_http_request(int cfd, int epfd);
+int epoll_run(int lfd);//ºËÐÄ
+void* thread_accept_connect(void* arg);
+void* thread_recv_http_request(void* arg);
 
 int parse_request_line(const char* line, int cfd);
 
