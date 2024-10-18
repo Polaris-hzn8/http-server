@@ -81,6 +81,7 @@
     <ClCompile Include="eventloop.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="poll_dispatcher.c" />
+    <ClCompile Include="select_dispatcher.c" />
     <ClCompile Include="server.c" />
   </ItemGroup>
   <ItemGroup>

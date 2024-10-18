@@ -18,7 +18,7 @@
 
 #define POLL_EVENT_MAX_NUM 1024
 
-typedef struct epoll_data_st
+typedef struct poll_data_st
 {
 	int				m_nfds;
 	struct pollfd	m_fds[POLL_EVENT_MAX_NUM];
