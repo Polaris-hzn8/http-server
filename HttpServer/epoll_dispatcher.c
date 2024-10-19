@@ -20,8 +20,8 @@
 
 typedef struct epoll_data_st
 {
-	int					m_epfd;
-	struct epoll_event* m_events;
+	int					epfd_;
+	struct epoll_event* events_;
 }EPOLLDATA, * PEPOLLDATA;
 
 static void* d_epoll_init();
@@ -33,7 +33,7 @@ static int d_epoll_clear(PEVENTLOOP event_loop);
 
 static int d_epoll_ctl(PCHANNEL channel, PEVENTLOOP event_loop, int op);
 
-DISPATCHER epoll_dispatcher =
+DISPATCHER g_epoll_dispatcher =
 {
 	d_epoll_init,
 	d_epoll_add,
@@ -51,8 +51,8 @@ static void* d_epoll_init()
 		perror("epoll_create");
 		exit(0);
 	}
-	data->m_epfd = epfd;
-	data->m_events = (struct epoll_event*)calloc(EPOLL_EVENT_MAX_NUM, sizeof(struct epoll_event));
+	data->epfd_ = epfd;
+	data->events_ = (struct epoll_event*)calloc(EPOLL_EVENT_MAX_NUM, sizeof(struct epoll_event));
 	return data;
 }
 
@@ -73,16 +73,16 @@ static int d_epoll_modify(PCHANNEL channel, PEVENTLOOP event_loop)
 
 int d_epoll_ctl(PCHANNEL channel, PEVENTLOOP event_loop, int op)
 {
-	PEPOLLDATA data = (PEPOLLDATA)event_loop->m_dispatcher;
+	PEPOLLDATA data = (PEPOLLDATA)event_loop->dispatcher_;
 	struct epoll_event ev;
-	ev.data.fd = channel->m_fd;
+	ev.data.fd = channel->fd_;
 	int events = 0;
-	if (channel->m_events & READ_EVENT)
+	if (channel->events_ & READ_EVENT)
 		events |= EPOLLIN;
-	if (channel->m_events & WRITE_EVENT)
+	if (channel->events_ & WRITE_EVENT)
 		events |= EPOLLOUT;
 	ev.events = events;
-	int ret = epoll_ctl(data->m_epfd, op, channel->m_fd, &ev);
+	int ret = epoll_ctl(data->epfd_, op, channel->fd_, &ev);
 	return ret;
 }
 
@@ -94,11 +94,11 @@ int d_epoll_ctl(PCHANNEL channel, PEVENTLOOP event_loop, int op)
  */
 static int d_epoll_dispatch(PEVENTLOOP event_loop, int timeout)
 {
-	PEPOLLDATA data = (PEPOLLDATA)event_loop->m_dispatcher;
-	int count = epoll_wait(data->m_epfd, data->m_events, EPOLL_EVENT_MAX_NUM, timeout * 1000);
+	PEPOLLDATA data = (PEPOLLDATA)event_loop->dispatcher_;
+	int count = epoll_wait(data->epfd_, data->events_, EPOLL_EVENT_MAX_NUM, timeout * 1000);
 	for (int i = 0; i < count; ++i) {
-		int fd = data->m_events[i].data.fd;
-		int events = data->m_events[i].events;
+		int fd = data->events_[i].data.fd;
+		int events = data->events_[i].events;
 		if (events & EPOLLERR || events & EPOLLHUP) {
 			/*Á¬½Ó¶Ï¿ª*/
 			//d_epoll_remove(channel, event_loop);
@@ -120,9 +120,9 @@ static int d_epoll_dispatch(PEVENTLOOP event_loop, int timeout)
 
 static int d_epoll_clear(PEVENTLOOP event_loop)
 {
-	PEPOLLDATA data = (PEPOLLDATA)event_loop->m_dispatcher;
-	free(data->m_events);
-	close(data->m_epfd);
+	PEPOLLDATA data = (PEPOLLDATA)event_loop->dispatcher_;
+	free(data->events_);
+	close(data->epfd_);
 	free(data);
 	return 0;
 }

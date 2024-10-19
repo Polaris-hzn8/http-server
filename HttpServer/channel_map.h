@@ -19,8 +19,8 @@
 
 typedef struct channel_map_st
 {
-	int			m_size;
-	CHANNEL**	m_list;
+	int			size_;
+	CHANNEL**	list_;
 }CHANNELMAP, *PCHANNELMAP;
 
 PCHANNELMAP channel_map_init(int size);

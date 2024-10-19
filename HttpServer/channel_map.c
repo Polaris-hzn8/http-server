@@ -15,37 +15,37 @@
 PCHANNELMAP channel_map_init(int size)
 {
 	PCHANNELMAP channel_map = (PCHANNELMAP)malloc(sizeof(CHANNELMAP));
-	channel_map->m_size = size;
-	channel_map->m_list = (CHANNEL**)malloc(size * sizeof(CHANNEL*));
+	channel_map->size_ = size;
+	channel_map->list_ = (CHANNEL**)malloc(size * sizeof(CHANNEL*));
 	return channel_map;
 }
 
 bool channel_map_uninit(PCHANNELMAP channel_map)
 {
 	if (channel_map) {
-		for (int i = 0; i < channel_map->m_size; ++i) {
-			PCHANNEL channel = channel_map->m_list[i];
+		for (int i = 0; i < channel_map->size_; ++i) {
+			PCHANNEL channel = channel_map->list_[i];
 			if (channel)
 				free(channel);
 		}
-		free(channel_map->m_list);
-		channel_map->m_list = NULL;
+		free(channel_map->list_);
+		channel_map->list_ = NULL;
 	}
-	channel_map->m_size = 0;
+	channel_map->size_ = 0;
 	return true;
 }
 
 bool channel_map_resize(PCHANNELMAP channel_map, int size, int unit_size)
 {
-	int list_size = channel_map->m_size;
+	int list_size = channel_map->size_;
 	if (list_size < size) {
 		int new_size;
 		while (new_size < size)
 			new_size *= 2;
-		CHANNEL** new_list = realloc(channel_map->m_list, new_size * unit_size);
+		CHANNEL** new_list = realloc(channel_map->list_, new_size * unit_size);
 		if (new_list) {
-			channel_map->m_list = new_list;
-			channel_map->m_size = new_size;
+			channel_map->list_ = new_list;
+			channel_map->size_ = new_size;
 			memset(&new_list[new_size], 0, (new_size - list_size) * unit_size);
 			return true;
 		}

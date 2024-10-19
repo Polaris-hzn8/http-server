@@ -20,8 +20,8 @@
 
 typedef struct poll_data_st
 {
-	int				m_nfds;
-	struct pollfd	m_fds[POLL_EVENT_MAX_NUM];
+	int				nfds_;
+	struct pollfd	fds_[POLL_EVENT_MAX_NUM];
 }POLLDATA, * PPOLLDATA;
 
 static void* d_poll_init();
@@ -31,7 +31,7 @@ static int d_poll_modify(PCHANNEL channel, PEVENTLOOP event_loop);
 static int d_poll_dispatch(PEVENTLOOP event_loop, int timeout);
 static int d_poll_clear(PEVENTLOOP event_loop);
 
-DISPATCHER epoll_dispatcher =
+DISPATCHER g_poll_dispatcher =
 {
 	d_poll_init,
 	d_poll_add,
@@ -44,31 +44,31 @@ DISPATCHER epoll_dispatcher =
 static void* d_poll_init()
 {
 	PPOLLDATA data = (PPOLLDATA)malloc(sizeof(POLLDATA));
-	data->m_nfds = 0;
+	data->nfds_ = 0;
 	for (int i = 0; i < POLL_EVENT_MAX_NUM; ++i) {
-		data->m_fds[i].fd = -1;
-		data->m_fds[i].events = 0;
-		data->m_fds[i].revents = 0;
+		data->fds_[i].fd = -1;
+		data->fds_[i].events = 0;
+		data->fds_[i].revents = 0;
 	}
 	return data;
 }
 
 static int d_poll_add(PCHANNEL channel, PEVENTLOOP event_loop)
 {
-	PPOLLDATA data = (PPOLLDATA)event_loop->m_dispatcher;
+	PPOLLDATA data = (PPOLLDATA)event_loop->dispatcher_;
 	int events = 0;
-	if (channel->m_events & READ_EVENT)
+	if (channel->events_ & READ_EVENT)
 		events |= POLLIN;
-	if (channel->m_events & WRITE_EVENT)
+	if (channel->events_ & WRITE_EVENT)
 		events |= POLLOUT;
 
 	int i = 0;
 	for (; i < POLL_EVENT_MAX_NUM; ++i) {
-		if (data->m_fds[i].fd == -1) {
-			data->m_fds[i].fd = channel->m_fd;
-			data->m_fds[i].events = events;
-			//data->m_nfds = max(i, data->m_nfds);
-			data->m_nfds = (i > data->m_nfds) ? i : data->m_nfds;
+		if (data->fds_[i].fd == -1) {
+			data->fds_[i].fd = channel->fd_;
+			data->fds_[i].events = events;
+			//data->nfds_ = max(i, data->nfds_);
+			data->nfds_ = (i > data->nfds_) ? i : data->nfds_;
 			break;
 		}
 	}
@@ -82,14 +82,14 @@ static int d_poll_add(PCHANNEL channel, PEVENTLOOP event_loop)
 
 static int d_poll_remove(PCHANNEL channel, PEVENTLOOP event_loop)
 {
-	PPOLLDATA data = (PPOLLDATA)event_loop->m_dispatcher;
+	PPOLLDATA data = (PPOLLDATA)event_loop->dispatcher_;
 
 	int i = 0;
 	for (; i < POLL_EVENT_MAX_NUM; ++i) {
-		if (data->m_fds[i].fd == channel->m_fd) {
-			data->m_fds[i].fd = -1;
-			data->m_fds[i].events = 0;
-			data->m_fds[i].revents = 0;
+		if (data->fds_[i].fd == channel->fd_) {
+			data->fds_[i].fd = -1;
+			data->fds_[i].events = 0;
+			data->fds_[i].revents = 0;
 			break;
 		}
 	}
@@ -103,17 +103,17 @@ static int d_poll_remove(PCHANNEL channel, PEVENTLOOP event_loop)
 
 static int d_poll_modify(PCHANNEL channel, PEVENTLOOP event_loop)
 {
-	PPOLLDATA data = (PPOLLDATA)event_loop->m_dispatcher;
+	PPOLLDATA data = (PPOLLDATA)event_loop->dispatcher_;
 	int events = 0;
-	if (channel->m_events & READ_EVENT)
+	if (channel->events_ & READ_EVENT)
 		events |= POLLIN;
-	if (channel->m_events & WRITE_EVENT)
+	if (channel->events_ & WRITE_EVENT)
 		events |= POLLOUT;
 
 	int i = 0;
 	for (; i < POLL_EVENT_MAX_NUM; ++i) {
-		if (data->m_fds[i].fd == channel->m_fd) {
-			data->m_fds[i].events = events;
+		if (data->fds_[i].fd == channel->fd_) {
+			data->fds_[i].events = events;
 			break;
 		}
 	}
@@ -133,18 +133,18 @@ static int d_poll_modify(PCHANNEL channel, PEVENTLOOP event_loop)
  */
 static int d_poll_dispatch(PEVENTLOOP event_loop, int timeout)
 {
-	PPOLLDATA data = (PPOLLDATA)event_loop->m_dispatcher;
-	int count = poll(data->m_fds, data->m_nfds + 1, timeout * 1000);
+	PPOLLDATA data = (PPOLLDATA)event_loop->dispatcher_;
+	int count = poll(data->fds_, data->nfds_ + 1, timeout * 1000);
 	if (count == -1) {
 		perror("poll");
 		exit(0);
 	}
 
-	for (int i = 0; i <= data->m_nfds; ++i) {
-		if (data->m_fds[i].fd == -1) {
+	for (int i = 0; i <= data->nfds_; ++i) {
+		if (data->fds_[i].fd == -1) {
 			continue;
 		}
-		int revents = data->m_fds[i].revents;
+		int revents = data->fds_[i].revents;
 		if (revents & POLLIN)
 		{
 			/*文件描述符读事件*/
@@ -162,7 +162,7 @@ static int d_poll_dispatch(PEVENTLOOP event_loop, int timeout)
 
 static int d_poll_clear(PEVENTLOOP event_loop)
 {
-	PPOLLDATA data = (PPOLLDATA)event_loop->m_dispatcher;
+	PPOLLDATA data = (PPOLLDATA)event_loop->dispatcher_;
 	free(data);
 	return 0;
 }

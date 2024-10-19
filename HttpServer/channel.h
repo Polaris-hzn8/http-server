@@ -18,11 +18,11 @@ typedef int(*handle_func)(void* arg);
 
 typedef struct channel_st
 {
-	int				m_fd;
-	int				m_events;
-	handle_func		m_read_call_back;	//读回调
-	handle_func		m_write_call_back;	//写回调
-	void*			m_arg;
+	int				fd_;
+	int				events_;
+	handle_func		read_call_back_;	//读回调
+	handle_func		write_call_back_;	//写回调
+	void*			arg_;
 }CHANNEL, *PCHANNEL;
 
 enum fd_event

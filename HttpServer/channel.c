@@ -15,25 +15,25 @@
 PCHANNEL channel_init(int fd, int events, handle_func read_call_back, handle_func write_call_back, void* arg)
 {
 	PCHANNEL channel = (PCHANNEL)malloc(sizeof(CHANNEL));
-	channel->m_fd = fd;
-	channel->m_events = events;
-	channel->m_read_call_back = read_call_back;
-	channel->m_write_call_back = write_call_back;
-	channel->m_arg = arg;
+	channel->fd_ = fd;
+	channel->events_ = events;
+	channel->read_call_back_ = read_call_back;
+	channel->write_call_back_ = write_call_back;
+	channel->arg_ = arg;
 	return channel;
 }
 
 bool set_write_event_enable(PCHANNEL channel, bool b_enable)
 {
 	if (b_enable)
-		channel->m_events |= WRITE_EVENT;
+		channel->events_ |= WRITE_EVENT;
 	else
-		channel->m_events = channel->m_events & ~WRITE_EVENT;
+		channel->events_ = channel->events_ & ~WRITE_EVENT;
 
 	return true;
 }
 
 bool get_write_event_enable(PCHANNEL channel)
 {
-	return channel->m_events & WRITE_EVENT;
+	return channel->events_ & WRITE_EVENT;
 }

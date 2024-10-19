@@ -20,8 +20,8 @@
 
 typedef struct select_data_st
 {
-	fd_set	m_r_set;
-	fd_set	m_w_set;
+	fd_set	r_set_;
+	fd_set	w_set_;
 }SELECTDATA, *PSELECTDATA;
 
 static void* d_select_init();
@@ -34,7 +34,7 @@ static int d_select_clear(PEVENTLOOP event_loop);
 static void d_select_fdset_set(PCHANNEL channel, PSELECTDATA data);
 static void d_select_fdset_cln(PCHANNEL channel, PSELECTDATA data);
 
-DISPATCHER epoll_dispatcher =
+DISPATCHER g_select_dispatcher =
 {
 	d_select_init,
 	d_select_add,
@@ -47,15 +47,15 @@ DISPATCHER epoll_dispatcher =
 static void* d_select_init()
 {
 	PSELECTDATA data = (PSELECTDATA)malloc(sizeof(SELECTDATA));
-	FD_ZERO(&data->m_r_set);
-	FD_ZERO(&data->m_w_set);
+	FD_ZERO(&data->r_set_);
+	FD_ZERO(&data->w_set_);
 	return data;
 }
 
 static int d_select_add(PCHANNEL channel, PEVENTLOOP event_loop)
 {
 	PSELECTDATA data = (PSELECTDATA)malloc(sizeof(SELECTDATA));
-	if (channel->m_fd >= SELECT_FD_MAX_NUM)
+	if (channel->fd_ >= SELECT_FD_MAX_NUM)
 		return -1;
 	d_select_fdset_set(channel, data);
 	return 0;
@@ -70,7 +70,7 @@ static int d_select_remove(PCHANNEL channel, PEVENTLOOP event_loop)
 
 static int d_select_modify(PCHANNEL channel, PEVENTLOOP event_loop)
 {
-	PSELECTDATA data = (PSELECTDATA)event_loop->m_dispatcher;
+	PSELECTDATA data = (PSELECTDATA)event_loop->dispatcher_;
 	d_select_fdset_set(channel, data);
 	d_select_fdset_cln(channel, data);
 	return 0;
@@ -84,13 +84,13 @@ static int d_select_modify(PCHANNEL channel, PEVENTLOOP event_loop)
  */
 static int d_select_dispatch(PEVENTLOOP event_loop, int timeout)
 {
-	PSELECTDATA data = (PSELECTDATA)event_loop->m_dispatcher;
+	PSELECTDATA data = (PSELECTDATA)event_loop->dispatcher_;
 	struct timeval val;
 	val.tv_sec = timeout;
 	val.tv_usec = 0;
 
-	fd_set rdset = data->m_r_set;
-	fd_set wrset = data->m_w_set;
+	fd_set rdset = data->r_set_;
+	fd_set wrset = data->w_set_;
 	int count = select(SELECT_FD_MAX_NUM, &rdset, &wrset, NULL, &val);
 	if (count == -1) {
 		perror("select");
@@ -115,24 +115,24 @@ static int d_select_dispatch(PEVENTLOOP event_loop, int timeout)
 
 static int d_select_clear(PEVENTLOOP event_loop)
 {
-	PSELECTDATA data = (PSELECTDATA)event_loop->m_dispatcher;
+	PSELECTDATA data = (PSELECTDATA)event_loop->dispatcher_;
 	free(data);
 	return 0;
 }
 
 static void d_select_fdset_set(PCHANNEL channel, PSELECTDATA data)
 {
-	if (channel->m_events & READ_EVENT)
-		FD_SET(channel->m_fd, &data->m_r_set);
-	if (channel->m_events & WRITE_EVENT)
-		FD_SET(channel->m_fd, &data->m_w_set);
+	if (channel->events_ & READ_EVENT)
+		FD_SET(channel->fd_, &data->r_set_);
+	if (channel->events_ & WRITE_EVENT)
+		FD_SET(channel->fd_, &data->w_set_);
 }
 
 static void d_select_fdset_cln(PCHANNEL channel, PSELECTDATA data)
 {
-	if (channel->m_events & READ_EVENT)
-		FD_CLR(channel->m_fd, &data->m_r_set);
-	if (channel->m_events & WRITE_EVENT)
-		FD_CLR(channel->m_fd, &data->m_w_set);
+	if (channel->events_ & READ_EVENT)
+		FD_CLR(channel->fd_, &data->r_set_);
+	if (channel->events_ & WRITE_EVENT)
+		FD_CLR(channel->fd_, &data->w_set_);
 }
 
