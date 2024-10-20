@@ -56,4 +56,4 @@ PEVENTLOOP event_loop_init();
 PEVENTLOOP event_loop_init_ex(const char* thread_name);
 
 int event_loop_run(PEVENTLOOP event_loop);
-int tackle_active_fd(PEVENTLOOP event_loop, int act_fd, int act_event);
+int event_tackle_active_fd(PEVENTLOOP event_loop, int act_fd, int act_event);

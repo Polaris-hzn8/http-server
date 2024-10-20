@@ -148,12 +148,12 @@ static int d_poll_dispatch(PEVENTLOOP event_loop, int timeout)
 		if (revents & POLLIN)
 		{
 			/*文件描述符读事件*/
-			continue;
+			event_tackle_active_fd(event_loop, data->fds_[i].fd, READ_EVENT);
 		}
 		if (revents & POLLOUT)
 		{
 			/*文件描述符写事件*/
-			continue;
+			event_tackle_active_fd(event_loop, data->fds_[i].fd, WRITE_EVENT);
 		}
 	}
 

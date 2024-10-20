@@ -23,7 +23,7 @@ PCHANNEL channel_init(int fd, int events, handle_func read_call_back, handle_fun
 	return channel;
 }
 
-bool set_write_event_enable(PCHANNEL channel, bool b_enable)
+bool channel_set_event_writable(PCHANNEL channel, bool b_enable)
 {
 	if (b_enable)
 		channel->events_ |= WRITE_EVENT;
@@ -33,7 +33,7 @@ bool set_write_event_enable(PCHANNEL channel, bool b_enable)
 	return true;
 }
 
-bool get_write_event_enable(PCHANNEL channel)
+bool channel_get_event_writable(PCHANNEL channel)
 {
 	return channel->events_ & WRITE_EVENT;
 }

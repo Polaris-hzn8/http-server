@@ -107,12 +107,12 @@ static int d_epoll_dispatch(PEVENTLOOP event_loop, int timeout)
 		if (events & EPOLLIN)
 		{
 			/*文件描述符读事件*/
-			continue;
+			event_tackle_active_fd(event_loop, fd, READ_EVENT);
 		}
 		if (events & EPOLLOUT)
 		{
 			/*文件描述符写事件*/
-			continue;
+			event_tackle_active_fd(event_loop, fd, WRITE_EVENT);
 		}
 	}
 	return 0;

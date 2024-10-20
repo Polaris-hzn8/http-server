@@ -34,6 +34,6 @@ enum fd_event
 
 PCHANNEL channel_init(int fd, int events, handle_func read_call_back, handle_func write_call_back, void* arg);
 
-bool set_write_event_enable(PCHANNEL channel, bool b_enable);
-bool get_write_event_enable(PCHANNEL channel);
+bool channel_set_event_writable(PCHANNEL channel, bool b_enable);
+bool channel_get_event_writable(PCHANNEL channel);
 

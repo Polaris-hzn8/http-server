@@ -61,11 +61,21 @@ int event_loop_run(PEVENTLOOP event_loop)
 	return 0;
 }
 
-int tackle_active_fd(PEVENTLOOP event_loop, int act_fd, int act_event)
+int event_tackle_active_fd(PEVENTLOOP event_loop, int act_fd, int act_event)
 {
+	if (act_fd < 0 || event_loop == NULL)
+		return -1;
 
+	PCHANNEL channel = event_loop->channel_map_->list_[act_fd];
 
+	if (channel->fd_ != act_fd)
+		return -2;
 
+	if (act_event & READ_EVENT)
+		channel->read_call_back_(channel->arg_);
+
+	if (act_event & WRITE_EVENT)
+		channel->write_call_back_(channel->arg_);
 
 	return 0;
 }

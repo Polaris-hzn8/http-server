@@ -101,12 +101,12 @@ static int d_select_dispatch(PEVENTLOOP event_loop, int timeout)
 		if (FD_ISSET(i, &rdset))
 		{
 			/*文件描述符读事件*/
-			continue;
+			event_tackle_active_fd(event_loop, i, READ_EVENT);
 		}
 		if (FD_ISSET(i, &wrset))
 		{
 			/*文件描述符写事件*/
-			continue;
+			event_tackle_active_fd(event_loop, i, WRITE_EVENT);
 		}
 	}
 
