@@ -13,6 +13,7 @@
 #pragma once
 
 #include <pthread.h>
+#include <sys/socket.h>
 #include "channel.h"
 #include "channel_map.h"
 #include "dispatcher.h"
@@ -40,7 +41,7 @@ typedef struct eventloop_st
 	bool		is_running_;
 	PDISPATCHER dispatcher_;
 	void*		dispatcher_data_;
-	//任务队列
+	//任务队列 用于修改文件描述符集合
 	PCHANNEL_NODE tasklist_head_;
 	PCHANNEL_NODE tasklist_tail_;
 	//记录对应关系
@@ -50,6 +51,8 @@ typedef struct eventloop_st
 	char		thread_name_[32];
 	//任务队列互斥锁
 	pthread_mutex_t mutex_;
+	//本地通信fd
+	int			socket_pair_[2];
 }EVENTLOOP, *PEVENTLOOP;
 
 PEVENTLOOP event_loop_init();
@@ -57,3 +60,4 @@ PEVENTLOOP event_loop_init_ex(const char* thread_name);
 
 int event_loop_run(PEVENTLOOP event_loop);
 int event_tackle_active_fd(PEVENTLOOP event_loop, int act_fd, int act_event);
+int event_loop_task_add(PEVENTLOOP event_loop, PCHANNEL channel, int type);
