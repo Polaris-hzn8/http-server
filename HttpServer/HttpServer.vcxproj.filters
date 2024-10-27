@@ -1,3 +1,69 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.c" />
+    <ClCompile Include="server.c" />
+    <ClCompile Include="reactor\channel.c">
+      <Filter>reactor\channel</Filter>
+    </ClCompile>
+    <ClCompile Include="reactor\channel_map.c">
+      <Filter>reactor\channel</Filter>
+    </ClCompile>
+    <ClCompile Include="reactor\epoll_dispatcher.c">
+      <Filter>reactor\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="reactor\poll_dispatcher.c">
+      <Filter>reactor\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="reactor\select_dispatcher.c">
+      <Filter>reactor\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="reactor\eventloop.c">
+      <Filter>reactor\eventloop</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\thread_pool.c">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\workthread.c">
+      <Filter>thread</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="server.h" />
+    <ClInclude Include="reactor\channel.h">
+      <Filter>reactor\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="reactor\channel_map.h">
+      <Filter>reactor\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="reactor\dispatcher.h">
+      <Filter>reactor\dispatcher</Filter>
+    </ClInclude>
+    <ClInclude Include="reactor\eventloop.h">
+      <Filter>reactor\eventloop</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\thread_pool.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\workthread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="reactor">
+      <UniqueIdentifier>{6e5d5d3c-7201-4980-8d30-ee1f98358b69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="reactor\channel">
+      <UniqueIdentifier>{146c5fae-f77b-4feb-9e7c-f7344a1a6b21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="reactor\dispatcher">
+      <UniqueIdentifier>{43060689-7ddd-466d-8046-e76fafa8e57c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="reactor\eventloop">
+      <UniqueIdentifier>{9c2671bd-decc-46f6-875a-10d1c7b4e78f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thread">
+      <UniqueIdentifier>{cfdcf69e-677f-427c-bf1c-b015ed3a8899}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
 </Project>
