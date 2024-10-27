@@ -83,6 +83,7 @@
     <ClCompile Include="reactor\poll_dispatcher.c" />
     <ClCompile Include="reactor\select_dispatcher.c" />
     <ClCompile Include="server.c" />
+    <ClCompile Include="thread\workthread.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="reactor\channel.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="reactor\dispatcher.h" />
     <ClInclude Include="reactor\eventloop.h" />
     <ClInclude Include="server.h" />
+    <ClInclude Include="thread\workthread.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <ClCompile>
