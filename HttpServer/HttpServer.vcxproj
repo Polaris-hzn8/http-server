@@ -75,20 +75,20 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="channel.c" />
-    <ClCompile Include="channel_map.c" />
-    <ClCompile Include="epoll_dispatcher.c" />
-    <ClCompile Include="eventloop.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="poll_dispatcher.c" />
-    <ClCompile Include="select_dispatcher.c" />
+    <ClCompile Include="reactor\channel.c" />
+    <ClCompile Include="reactor\channel_map.c" />
+    <ClCompile Include="reactor\epoll_dispatcher.c" />
+    <ClCompile Include="reactor\eventloop.c" />
+    <ClCompile Include="reactor\poll_dispatcher.c" />
+    <ClCompile Include="reactor\select_dispatcher.c" />
     <ClCompile Include="server.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="channel.h" />
-    <ClInclude Include="channel_map.h" />
-    <ClInclude Include="dispatcher.h" />
-    <ClInclude Include="eventloop.h" />
+    <ClInclude Include="reactor\channel.h" />
+    <ClInclude Include="reactor\channel_map.h" />
+    <ClInclude Include="reactor\dispatcher.h" />
+    <ClInclude Include="reactor\eventloop.h" />
     <ClInclude Include="server.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
