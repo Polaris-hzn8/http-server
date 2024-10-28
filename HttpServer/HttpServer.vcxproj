@@ -75,6 +75,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClCompile Include="buffer\buffer.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="reactor\channel.c" />
     <ClCompile Include="reactor\channel_map.c" />
@@ -87,6 +88,7 @@
     <ClCompile Include="thread\workthread.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="buffer\buffer.h" />
     <ClInclude Include="reactor\channel.h" />
     <ClInclude Include="reactor\channel_map.h" />
     <ClInclude Include="reactor\dispatcher.h" />
