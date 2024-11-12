@@ -77,9 +77,9 @@ int d_epoll_ctl(PCHANNEL channel, PEVENTLOOP event_loop, int op)
 	struct epoll_event ev;
 	ev.data.fd = channel->fd_;
 	int events = 0;
-	if (channel->events_ & READ_EVENT)
+	if (channel->events_ & CE_READ_EVENT)
 		events |= EPOLLIN;
-	if (channel->events_ & WRITE_EVENT)
+	if (channel->events_ & CE_WRITE_EVENT)
 		events |= EPOLLOUT;
 	ev.events = events;
 	int ret = epoll_ctl(data->epfd_, op, channel->fd_, &ev);
@@ -107,12 +107,12 @@ static int d_epoll_dispatch(PEVENTLOOP event_loop, int timeout)
 		if (events & EPOLLIN)
 		{
 			/*文件描述符读事件*/
-			event_tackle_active_fd(event_loop, fd, READ_EVENT);
+			event_tackle_active_fd(event_loop, fd, CE_READ_EVENT);
 		}
 		if (events & EPOLLOUT)
 		{
 			/*文件描述符写事件*/
-			event_tackle_active_fd(event_loop, fd, WRITE_EVENT);
+			event_tackle_active_fd(event_loop, fd, CE_WRITE_EVENT);
 		}
 	}
 	return 0;

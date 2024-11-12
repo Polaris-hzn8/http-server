@@ -57,9 +57,9 @@ static int d_poll_add(PCHANNEL channel, PEVENTLOOP event_loop)
 {
 	PPOLLDATA data = (PPOLLDATA)event_loop->dispatcher_;
 	int events = 0;
-	if (channel->events_ & READ_EVENT)
+	if (channel->events_ & CE_READ_EVENT)
 		events |= POLLIN;
-	if (channel->events_ & WRITE_EVENT)
+	if (channel->events_ & CE_WRITE_EVENT)
 		events |= POLLOUT;
 
 	int i = 0;
@@ -105,9 +105,9 @@ static int d_poll_modify(PCHANNEL channel, PEVENTLOOP event_loop)
 {
 	PPOLLDATA data = (PPOLLDATA)event_loop->dispatcher_;
 	int events = 0;
-	if (channel->events_ & READ_EVENT)
+	if (channel->events_ & CE_READ_EVENT)
 		events |= POLLIN;
-	if (channel->events_ & WRITE_EVENT)
+	if (channel->events_ & CE_WRITE_EVENT)
 		events |= POLLOUT;
 
 	int i = 0;
@@ -148,12 +148,12 @@ static int d_poll_dispatch(PEVENTLOOP event_loop, int timeout)
 		if (revents & POLLIN)
 		{
 			/*文件描述符读事件*/
-			event_tackle_active_fd(event_loop, data->fds_[i].fd, READ_EVENT);
+			event_tackle_active_fd(event_loop, data->fds_[i].fd, CE_READ_EVENT);
 		}
 		if (revents & POLLOUT)
 		{
 			/*文件描述符写事件*/
-			event_tackle_active_fd(event_loop, data->fds_[i].fd, WRITE_EVENT);
+			event_tackle_active_fd(event_loop, data->fds_[i].fd, CE_WRITE_EVENT);
 		}
 	}
 

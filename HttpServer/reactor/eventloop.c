@@ -62,7 +62,7 @@ PEVENTLOOP event_loop_init_ex(const char* thread_name)
 		exit(0);
 	}
 
-	PCHANNEL channel = channel_init(event_loop->socket_pair_[1], READ_EVENT, read_local_message, NULL, event_loop);
+	PCHANNEL channel = channel_init(event_loop->socket_pair_[1], CE_READ_EVENT, read_local_message, NULL, event_loop);
 	event_loop_task_add(event_loop, channel, CN_ADD);
 
 	return event_loop;		
@@ -98,10 +98,10 @@ int event_tackle_active_fd(PEVENTLOOP event_loop, int act_fd, int act_event)
 	if (channel->fd_ != act_fd)
 		return -2;
 
-	if (act_event & READ_EVENT)
+	if (act_event & CE_READ_EVENT)
 		channel->read_call_back_(channel->arg_);
 
-	if (act_event & WRITE_EVENT)
+	if (act_event & CE_WRITE_EVENT)
 		channel->write_call_back_(channel->arg_);
 
 	return 0;

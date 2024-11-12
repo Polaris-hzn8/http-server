@@ -101,12 +101,12 @@ static int d_select_dispatch(PEVENTLOOP event_loop, int timeout)
 		if (FD_ISSET(i, &rdset))
 		{
 			/*文件描述符读事件*/
-			event_tackle_active_fd(event_loop, i, READ_EVENT);
+			event_tackle_active_fd(event_loop, i, CE_READ_EVENT);
 		}
 		if (FD_ISSET(i, &wrset))
 		{
 			/*文件描述符写事件*/
-			event_tackle_active_fd(event_loop, i, WRITE_EVENT);
+			event_tackle_active_fd(event_loop, i, CE_WRITE_EVENT);
 		}
 	}
 
@@ -122,17 +122,17 @@ static int d_select_clear(PEVENTLOOP event_loop)
 
 static void d_select_fdset_set(PCHANNEL channel, PSELECTDATA data)
 {
-	if (channel->events_ & READ_EVENT)
+	if (channel->events_ & CE_READ_EVENT)
 		FD_SET(channel->fd_, &data->r_set_);
-	if (channel->events_ & WRITE_EVENT)
+	if (channel->events_ & CE_WRITE_EVENT)
 		FD_SET(channel->fd_, &data->w_set_);
 }
 
 static void d_select_fdset_cln(PCHANNEL channel, PSELECTDATA data)
 {
-	if (channel->events_ & READ_EVENT)
+	if (channel->events_ & CE_READ_EVENT)
 		FD_CLR(channel->fd_, &data->r_set_);
-	if (channel->events_ & WRITE_EVENT)
+	if (channel->events_ & CE_WRITE_EVENT)
 		FD_CLR(channel->fd_, &data->w_set_);
 }
 

@@ -24,7 +24,7 @@ extern DISPATCHER g_epoll_dispatcher;
 extern DISPATCHER g_poll_dispatcher;
 extern DISPATCHER g_select_dispatcher;
 
-enum NodeType
+enum ChannelNType
 {
 	CN_ADD,
 	CN_DEL,
