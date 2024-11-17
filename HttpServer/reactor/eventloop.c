@@ -17,8 +17,8 @@
 
 void task_list_wake_up(PEVENTLOOP event_loop)
 {
-	const char* wake_up_msg = "anything.";
-	write(event_loop->socket_pair_[0], wake_up_msg, strlen(wake_up_msg));
+	const char* msg = "nothing!~";
+	write(event_loop->socket_pair_[0], msg, strlen(msg));
 }
 
 int read_local_message(void* arg)
@@ -62,7 +62,7 @@ PEVENTLOOP event_loop_init_ex(const char* thread_name)
 		exit(0);
 	}
 
-	PCHANNEL channel = channel_init(event_loop->socket_pair_[1], READ_EVENT, read_local_message, NULL, event_loop);
+	PCHANNEL channel = channel_init(event_loop->socket_pair_[1], CE_READ_EVENT, read_local_message, NULL, event_loop);
 	event_loop_task_add(event_loop, channel, CN_ADD);
 
 	return event_loop;		
@@ -70,19 +70,25 @@ PEVENTLOOP event_loop_init_ex(const char* thread_name)
 
 int event_loop_run(PEVENTLOOP event_loop)
 {
-	assert(event_loop != NULL);
-
-	if (event_loop->thread_id_ != pthread_self())
+	if (event_loop == NULL) {
+		LOGOUT("event_loop is null, event_loop_run failed.");
 		return -1;
+	}
 
-	/* 取出事件分发和检测模型 */
+	if (event_loop->thread_id_ != pthread_self()) {
+		/* 主线程 */
+		LOGOUT("main thread event_loop_run return failed.");
+		return -1;
+	}
+
+	/* 子线程 */
+	// 取出事件检测分发模型
 	PDISPATCHER dispatcher = event_loop->dispatcher_;
-
-	/* 循环进行事件处理 */
+	// 循环进行事件处理
 	int time_out = 3;
 	while (!event_loop->is_running_) {
 		dispatcher->dispatch(event_loop, time_out);
-		event_loop_task_process(event_loop);
+		event_loop_process_task(event_loop);
 	}
 
 	return 0;
@@ -98,10 +104,10 @@ int event_tackle_active_fd(PEVENTLOOP event_loop, int act_fd, int act_event)
 	if (channel->fd_ != act_fd)
 		return -2;
 
-	if (act_event & READ_EVENT)
+	if (act_event & CE_READ_EVENT)
 		channel->read_call_back_(channel->arg_);
 
-	if (act_event & WRITE_EVENT)
+	if (act_event & CE_WRITE_EVENT)
 		channel->write_call_back_(channel->arg_);
 
 	return 0;
@@ -112,7 +118,6 @@ int event_loop_task_add(PEVENTLOOP event_loop, PCHANNEL channel, int type)
 	pthread_mutex_lock(&event_loop->mutex_);
 
 	PCHANNEL_NODE channel_node = (PCHANNEL_NODE)malloc(sizeof(CHANNEL_NODE));
-
 	channel_node->channel_ = channel;
 	channel_node->type_ = type;
 	channel_node->next_ = NULL;
@@ -133,25 +138,23 @@ int event_loop_task_add(PEVENTLOOP event_loop, PCHANNEL channel, int type)
 	 *	添加新的fd：和新客户端建立连接，由主线程发起并执行
 	 * 2.主线程不进行结点的处理
 	 */
-	if (event_loop->thread_id_ = pthread_self()) {
+	if (event_loop->thread_id_ == pthread_self()) {
 		/* 子线程 */
-		event_loop_task_process(event_loop);
+		event_loop_process_task(event_loop);
 	} else {
-		/*
-		* 主线程
-		* 通知子线程处理任务队列中的任务
-		* 在检测的集合中添加可控制的fd 用于唤醒解除阻塞
-		* 1.两个文件描述符
-		* 2.两个文件描述符之间可以进行数据通信(单向即可)
-		* 3.pipe/socketpair
-		*/
+		/* 主线程 */
+		//通知子线程处理任务队列中的任务
+		//在检测的集合中添加可控制的fd 用于唤醒解除阻塞
+		//1.两个文件描述符
+		//2.两个文件描述符之间可以进行数据通信(单向即可)
+		//3.pipe / socketpair
 		task_list_wake_up(event_loop);
 	}
 
 	return 0;
 }
 
-int event_loop_task_process(PEVENTLOOP event_loop)
+int event_loop_process_task(PEVENTLOOP event_loop)
 {
 	pthread_mutex_lock(&event_loop->mutex_);
 

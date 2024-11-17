@@ -20,11 +20,12 @@
 
 #define LOGOUT(fmt, ...) do { printf(fmt, ##__VA_ARGS__); fflush(stdout); } while(0)
 
-extern DISPATCHER g_epoll_dispatcher;
-extern DISPATCHER g_poll_dispatcher;
-extern DISPATCHER g_select_dispatcher;
+// 前向声明解决循环依赖
+typedef struct dispatcher_st DISPATCHER, * PDISPATCHER;
+// 前向声明解决自我依赖
+typedef struct channel_node_st CHANNEL_NODE, * PCHANNEL_NODE;
 
-enum NodeType
+enum CN_TYPE
 {
 	CN_ADD,
 	CN_DEL,
@@ -57,6 +58,10 @@ typedef struct eventloop_st
 	int			socket_pair_[2];
 }EVENTLOOP, *PEVENTLOOP;
 
+extern DISPATCHER g_epoll_dispatcher;
+extern DISPATCHER g_poll_dispatcher;
+extern DISPATCHER g_select_dispatcher;
+
 PEVENTLOOP event_loop_init();
 PEVENTLOOP event_loop_init_ex(const char* thread_name);
 
@@ -64,7 +69,7 @@ int event_loop_run(PEVENTLOOP event_loop);
 int event_tackle_active_fd(PEVENTLOOP event_loop, int act_fd, int act_event);
 int event_loop_task_add(PEVENTLOOP event_loop, PCHANNEL channel, int type);
 
-int event_loop_task_process(PEVENTLOOP event_loop);
+int event_loop_process_task(PEVENTLOOP event_loop);
 int event_loop_add(PEVENTLOOP event_loop, PCHANNEL channel);
 int event_loop_rem(PEVENTLOOP event_loop, PCHANNEL channel);
 int event_loop_mod(PEVENTLOOP event_loop, PCHANNEL channel);

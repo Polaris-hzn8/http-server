@@ -26,14 +26,14 @@ PCHANNEL channel_init(int fd, int events, handle_func read_call_back, handle_fun
 bool channel_set_event_writable(PCHANNEL channel, bool b_enable)
 {
 	if (b_enable)
-		channel->events_ |= WRITE_EVENT;
+		channel->events_ |= CE_WRITE_EVENT;
 	else
-		channel->events_ = channel->events_ & ~WRITE_EVENT;
+		channel->events_ = channel->events_ & ~CE_WRITE_EVENT;
 
 	return true;
 }
 
 bool channel_get_event_writable(PCHANNEL channel)
 {
-	return channel->events_ & WRITE_EVENT;
+	return channel->events_ & CE_WRITE_EVENT;
 }

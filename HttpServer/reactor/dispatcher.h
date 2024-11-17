@@ -15,6 +15,9 @@
 #include "channel.h"
 #include "eventloop.h"
 
+// 前向声明解决循环依赖
+typedef struct eventloop_st EVENTLOOP, *PEVENTLOOP;
+
 typedef struct dispatcher_st
 {
 	void* (*init)();

@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="main.c" />
-    <ClCompile Include="server.c" />
     <ClCompile Include="reactor\channel.c">
       <Filter>reactor\channel</Filter>
     </ClCompile>
@@ -27,9 +25,23 @@
     <ClCompile Include="thread\workthread.c">
       <Filter>thread</Filter>
     </ClCompile>
+    <ClCompile Include="buffer\buffer.c">
+      <Filter>buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="tcp_server\tcp_server.c">
+      <Filter>tcp_server</Filter>
+    </ClCompile>
+    <ClCompile Include="main.c">
+      <Filter>example</Filter>
+    </ClCompile>
+    <ClCompile Include="server.c">
+      <Filter>example</Filter>
+    </ClCompile>
+    <ClCompile Include="tcp_server\tcp_connection.c">
+      <Filter>tcp_server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="server.h" />
     <ClInclude Include="reactor\channel.h">
       <Filter>reactor\channel</Filter>
     </ClInclude>
@@ -48,6 +60,18 @@
     <ClInclude Include="thread\workthread.h">
       <Filter>thread</Filter>
     </ClInclude>
+    <ClInclude Include="buffer\buffer.h">
+      <Filter>buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="tcp_server\tcp_server.h">
+      <Filter>tcp_server</Filter>
+    </ClInclude>
+    <ClInclude Include="server.h">
+      <Filter>example</Filter>
+    </ClInclude>
+    <ClInclude Include="tcp_server\tcp_connection.h">
+      <Filter>tcp_server</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="reactor">
@@ -64,6 +88,15 @@
     </Filter>
     <Filter Include="thread">
       <UniqueIdentifier>{cfdcf69e-677f-427c-bf1c-b015ed3a8899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="buffer">
+      <UniqueIdentifier>{35474f20-0003-495e-9ed8-67b94e30b83d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="example">
+      <UniqueIdentifier>{625eed1c-791f-462f-9394-79ca63cdd6a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tcp_server">
+      <UniqueIdentifier>{ba70a277-3fae-4d81-9437-cfca39cc36b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

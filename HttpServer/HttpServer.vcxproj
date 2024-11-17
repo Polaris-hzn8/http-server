@@ -75,6 +75,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClCompile Include="buffer\buffer.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="reactor\channel.c" />
     <ClCompile Include="reactor\channel_map.c" />
@@ -83,15 +84,20 @@
     <ClCompile Include="reactor\poll_dispatcher.c" />
     <ClCompile Include="reactor\select_dispatcher.c" />
     <ClCompile Include="server.c" />
+    <ClCompile Include="tcp_server\tcp_connection.c" />
+    <ClCompile Include="tcp_server\tcp_server.c" />
     <ClCompile Include="thread\thread_pool.c" />
     <ClCompile Include="thread\workthread.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="buffer\buffer.h" />
     <ClInclude Include="reactor\channel.h" />
     <ClInclude Include="reactor\channel_map.h" />
     <ClInclude Include="reactor\dispatcher.h" />
     <ClInclude Include="reactor\eventloop.h" />
     <ClInclude Include="server.h" />
+    <ClInclude Include="tcp_server\tcp_connection.h" />
+    <ClInclude Include="tcp_server\tcp_server.h" />
     <ClInclude Include="thread\thread_pool.h" />
     <ClInclude Include="thread\workthread.h" />
   </ItemGroup>
