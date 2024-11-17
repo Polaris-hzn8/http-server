@@ -95,7 +95,13 @@ int buffer_write(PBUFFER buffer, const char* data, int size)
 	return 0;
 }
 
-int buffer_write_from_socket(PBUFFER buffer, int fd)
+int buffer_write_ex(PBUFFER buffer, const char* data)
+{
+	int size = strlen(data);
+	return buffer_write(buffer, data, size);
+}
+
+int buffer_read_from_socket(PBUFFER buffer, int fd)
 {
 	struct iovec vec[2];
 	int writable_size = buffer_write_size_remain(buffer);

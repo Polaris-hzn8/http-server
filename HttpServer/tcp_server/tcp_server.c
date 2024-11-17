@@ -11,6 +11,7 @@
 **/
 
 #include "tcp_server.h"
+#include "tcp_connection.h"
 #include <arpa/inet.h>
 
 PLISTENER listener_init(unsigned short port)
@@ -73,11 +74,11 @@ int tcp_server_run(PTCP_SERVER tcp_server)
 	// 启动线程池
 	thread_pool_run(tcp_server->thread_pool_);
 
-	// 添加检测的任务
+	// 文件描述符添加到检测队列中
 	PCHANNEL channel = channel_init(tcp_server->listener_->lfd_, CE_READ_EVENT, accept_connection, NULL, tcp_server);
 	event_loop_task_add(tcp_server->event_loop_, channel, CN_ADD);
 
-	// 启动反应堆模型
+	// 启动反应堆模型处理
 	event_loop_run(tcp_server->event_loop_);
 
 	return 0;
@@ -88,13 +89,14 @@ int accept_connection(void* arg)
 {
 	PTCP_SERVER tcp_server = (PTCP_SERVER)arg;
 
-	// 建立连接
+	// 客户端建立连接
 	int cfd = accept(tcp_server->listener_->lfd_, NULL, NULL);
 
-	// 读写事件交由子线程处理
+	// 获取子线程反应堆实例
 	PEVENTLOOP event_loop = get_event_loop_from_workthread(tcp_server->thread_pool_);
 
-	//TODO
+	// 读写事件交由子线程反应堆实例处理
+	tcp_connection_init(cfd, event_loop);
 
 	return 0;
 }

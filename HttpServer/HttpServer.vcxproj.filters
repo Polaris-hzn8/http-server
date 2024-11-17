@@ -29,13 +29,16 @@
       <Filter>buffer</Filter>
     </ClCompile>
     <ClCompile Include="tcp_server\tcp_server.c">
-      <Filter>server</Filter>
+      <Filter>tcp_server</Filter>
     </ClCompile>
     <ClCompile Include="main.c">
       <Filter>example</Filter>
     </ClCompile>
     <ClCompile Include="server.c">
       <Filter>example</Filter>
+    </ClCompile>
+    <ClCompile Include="tcp_server\tcp_connection.c">
+      <Filter>tcp_server</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -61,10 +64,13 @@
       <Filter>buffer</Filter>
     </ClInclude>
     <ClInclude Include="tcp_server\tcp_server.h">
-      <Filter>server</Filter>
+      <Filter>tcp_server</Filter>
     </ClInclude>
     <ClInclude Include="server.h">
       <Filter>example</Filter>
+    </ClInclude>
+    <ClInclude Include="tcp_server\tcp_connection.h">
+      <Filter>tcp_server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -86,11 +92,11 @@
     <Filter Include="buffer">
       <UniqueIdentifier>{35474f20-0003-495e-9ed8-67b94e30b83d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="server">
-      <UniqueIdentifier>{ba70a277-3fae-4d81-9437-cfca39cc36b7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="example">
       <UniqueIdentifier>{625eed1c-791f-462f-9394-79ca63cdd6a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tcp_server">
+      <UniqueIdentifier>{ba70a277-3fae-4d81-9437-cfca39cc36b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
