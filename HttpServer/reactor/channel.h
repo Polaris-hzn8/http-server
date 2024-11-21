@@ -25,11 +25,11 @@ typedef struct channel_st
 	void*			arg_;
 }CHANNEL, *PCHANNEL;
 
-enum ChannelEvent
+enum channel_event_type
 {
-	CE_TIME_OUT	= 0x01,
+	CE_TIME_OUT		= 0x01,
 	CE_READ_EVENT	= 0x02,
-	CE_WRITE_EVENT = 0x04
+	CE_WRITE_EVENT	= 0x04
 };
 
 PCHANNEL channel_init(int fd, int events, handle_func read_call_back, handle_func write_call_back, void* arg);

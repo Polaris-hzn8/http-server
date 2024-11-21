@@ -10,9 +10,11 @@
 *
 **/
 
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include <unistd.h>
+#include <sys/socket.h>
 #include "eventloop.h"
 
 void task_list_wake_up(PEVENTLOOP event_loop)

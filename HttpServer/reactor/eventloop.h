@@ -13,7 +13,6 @@
 #pragma once
 
 #include <pthread.h>
-#include <sys/socket.h>
 #include "channel.h"
 #include "channel_map.h"
 #include "dispatcher.h"
@@ -25,7 +24,7 @@ typedef struct dispatcher_st DISPATCHER, * PDISPATCHER;
 // 前向声明解决自我依赖
 typedef struct channel_node_st CHANNEL_NODE, * PCHANNEL_NODE;
 
-enum CN_TYPE
+enum channel_node_type
 {
 	CN_ADD,
 	CN_DEL,

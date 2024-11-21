@@ -12,9 +12,6 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #define LOGOUT(fmt, ...) do { printf(fmt, ##__VA_ARGS__); fflush(stdout); } while(0)
 
 typedef struct buffer_st {
@@ -36,3 +33,6 @@ int buffer_write_ex(PBUFFER buffer, const char* data);
 
 // 接收套接字数据
 int buffer_read_from_socket(PBUFFER buffer, int fd);
+
+// 其他
+char* buffer_find_crlf(PBUFFER buffer);

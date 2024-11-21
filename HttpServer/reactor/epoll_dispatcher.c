@@ -10,9 +10,9 @@
 *
 **/
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <sys/epoll.h>
 #include "dispatcher.h"
 

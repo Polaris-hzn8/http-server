@@ -40,6 +40,12 @@
     <ClCompile Include="tcp_server\tcp_connection.c">
       <Filter>tcp_server</Filter>
     </ClCompile>
+    <ClCompile Include="tcp_server\http_request.c">
+      <Filter>tcp_server</Filter>
+    </ClCompile>
+    <ClCompile Include="tcp_server\http_response.c">
+      <Filter>tcp_server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="reactor\channel.h">
@@ -70,6 +76,12 @@
       <Filter>example</Filter>
     </ClInclude>
     <ClInclude Include="tcp_server\tcp_connection.h">
+      <Filter>tcp_server</Filter>
+    </ClInclude>
+    <ClInclude Include="tcp_server\http_request.h">
+      <Filter>tcp_server</Filter>
+    </ClInclude>
+    <ClInclude Include="tcp_server\http_response.h">
       <Filter>tcp_server</Filter>
     </ClInclude>
   </ItemGroup>

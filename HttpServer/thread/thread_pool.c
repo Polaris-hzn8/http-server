@@ -10,6 +10,7 @@
 *
 **/
 
+#include <stdio.h>
 #include "thread_pool.h"
 #include "../reactor/eventloop.h"
 

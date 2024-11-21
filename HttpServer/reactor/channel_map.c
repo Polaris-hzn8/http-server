@@ -10,6 +10,7 @@
 *
 **/
 
+#include <stdio.h>
 #include "channel_map.h"
 
 PCHANNELMAP channel_map_init(int size)

@@ -10,7 +10,10 @@
 *
 **/
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <memory.h>
+#include <string.h>
 #include <sys/uio.h>
 #include "buffer.h"
 
@@ -127,5 +130,12 @@ int buffer_read_from_socket(PBUFFER buffer, int fd)
 	tmpbuff = NULL;
 
 	return ret;
+}
+
+char* buffer_find_crlf(PBUFFER buffer)
+{
+	char* crlf = "\r\n";
+	char* ptr = memmem(buffer->data_ + buffer->read_pos_, buffer_read_size_remain(buffer), crlf, strlen(crlf));
+	return ptr;
 }
 

@@ -12,9 +12,7 @@
 
 #pragma once
 
-#include <stdio.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include "channel.h"
 
 typedef struct channel_map_st
