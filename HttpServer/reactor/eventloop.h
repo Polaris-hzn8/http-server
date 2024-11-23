@@ -17,8 +17,6 @@
 #include "channel_map.h"
 #include "dispatcher.h"
 
-#define LOGOUT(fmt, ...) do { printf(fmt, ##__VA_ARGS__); fflush(stdout); } while(0)
-
 // 前向声明解决循环依赖
 typedef struct dispatcher_st DISPATCHER, * PDISPATCHER;
 // 前向声明解决自我依赖

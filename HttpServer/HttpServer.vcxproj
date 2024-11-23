@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer\buffer.h" />
+    <ClInclude Include="loginfo\loginfo.h" />
     <ClInclude Include="reactor\channel.h" />
     <ClInclude Include="reactor\channel_map.h" />
     <ClInclude Include="reactor\dispatcher.h" />

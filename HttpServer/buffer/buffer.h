@@ -12,8 +12,6 @@
 
 #pragma once
 
-#define LOGOUT(fmt, ...) do { printf(fmt, ##__VA_ARGS__); fflush(stdout); } while(0)
-
 typedef struct buffer_st {
 	char* data_;
 	int capacity_;

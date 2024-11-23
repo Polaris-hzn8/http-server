@@ -16,8 +16,6 @@
 #include "workthread.h"
 #include "../reactor/eventloop.h"
 
-#define LOGOUT(fmt, ...) do { printf(fmt, ##__VA_ARGS__); fflush(stdout); } while(0)
-
 typedef struct thread_pool_st {
 	bool is_running_;
 	int idx_;

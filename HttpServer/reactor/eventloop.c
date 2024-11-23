@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include "eventloop.h"
+#include "../loginfo/loginfo.h"
 
 void task_list_wake_up(PEVENTLOOP event_loop)
 {
@@ -73,13 +74,13 @@ PEVENTLOOP event_loop_init_ex(const char* thread_name)
 int event_loop_run(PEVENTLOOP event_loop)
 {
 	if (event_loop == NULL) {
-		LOGOUT("event_loop is null, event_loop_run failed.");
+		LOG_OUT("event_loop is null, event_loop_run failed.");
 		return -1;
 	}
 
 	if (event_loop->thread_id_ != pthread_self()) {
 		/* Ö÷Ïß³Ì */
-		LOGOUT("main thread event_loop_run return failed.");
+		LOG_OUT("main thread event_loop_run return failed.");
 		return -1;
 	}
 
@@ -211,7 +212,7 @@ int event_loop_rem(PEVENTLOOP event_loop, PCHANNEL channel)
 	int fd = channel->fd_;
 	PCHANNELMAP channel_map = event_loop->channel_map_;
 	if (fd >= channel_map->size_ || channel_map->list_[fd] == NULL) {
-		LOGOUT("fd[%d] not in channel_map, remove from event_loop failed.", fd);
+		LOG_OUT("fd[%d] not in channel_map, remove from event_loop failed.", fd);
 		return -1;
 	}
 	int ret = event_loop->dispatcher_->remove(channel, event_loop);
@@ -223,7 +224,7 @@ int event_loop_mod(PEVENTLOOP event_loop, PCHANNEL channel)
 	int fd = channel->fd_;
 	PCHANNELMAP channel_map = event_loop->channel_map_;
 	if (fd >= channel_map->size_ || channel_map->list_[fd] == NULL) {
-		LOGOUT("fd[%d] not in channel_map, modify from event_loop failed.", fd);
+		LOG_OUT("fd[%d] not in channel_map, modify from event_loop failed.", fd);
 		return -1;
 	}
 	int ret = event_loop->dispatcher_->modify(channel, event_loop);

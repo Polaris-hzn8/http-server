@@ -16,6 +16,7 @@
 #include <string.h>
 #include <sys/uio.h>
 #include "buffer.h"
+#include "../loginfo/loginfo.h"
 
 PBUFFER buffer_init(int capacity)
 {
@@ -86,7 +87,7 @@ int buffer_read_size_remain(PBUFFER buffer)
 int buffer_write(PBUFFER buffer, const char* data, int size)
 {
 	if (buffer == NULL || data == NULL || size <= 0) {
-		LOGOUT("buffer_write failed, invalid data.");
+		LOG_OUT("buffer_write failed, invalid data.");
 		return -1;
 	}
 

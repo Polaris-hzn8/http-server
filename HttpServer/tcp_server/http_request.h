@@ -63,3 +63,7 @@ bool hr_parse_req_header(PHTTP_REQUEST request, PBUFFER buffer);
 bool hr_parse_req_body(PHTTP_REQUEST request, PBUFFER buffer);
 // 解析完整请求协议
 bool hr_parse_req(PHTTP_REQUEST request, PBUFFER buffer);
+
+// 请求响应 get post
+bool hr_request_process_on_get(PHTTP_REQUEST request);
+bool hr_request_process_on_post(PHTTP_REQUEST request);

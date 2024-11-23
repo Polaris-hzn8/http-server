@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include "thread_pool.h"
 #include "../reactor/eventloop.h"
+#include "../loginfo/loginfo.h"
 
 PTHREAD_POOL thread_pool_init(PEVENTLOOP main_loop, int thread_num)
 {
@@ -30,12 +31,12 @@ PTHREAD_POOL thread_pool_init(PEVENTLOOP main_loop, int thread_num)
 int thread_pool_run(PTHREAD_POOL thread_pool)
 {
 	if (thread_pool == NULL || thread_pool->is_running_) {
-		LOGOUT("thread_pool is running already, or thread_pool NULL.");
+		LOG_OUT("thread_pool is running already, or thread_pool NULL.");
 		return -1;
 	}
 
 	if (thread_pool->main_loop_->thread_id_ != pthread_self()) {
-		LOGOUT("only main thread event_loop can run thread_pool.");
+		LOG_OUT("only main thread event_loop can run thread_pool.");
 		return -1;
 	}
 
@@ -56,12 +57,12 @@ int thread_pool_run(PTHREAD_POOL thread_pool)
 PEVENTLOOP get_event_loop_from_workthread(PTHREAD_POOL thread_pool)
 {
 	if (!thread_pool->is_running_) {
-		LOGOUT("thread_pool is not running. get event_loop failed.");
+		LOG_OUT("thread_pool is not running. get event_loop failed.");
 		return NULL;
 	}
 
 	if (thread_pool->main_loop_->thread_id_ != pthread_self()) {
-		LOGOUT("only main thread can get event_loop from thread_pool.");
+		LOG_OUT("only main thread can get event_loop from thread_pool.");
 		return NULL;
 	}
 

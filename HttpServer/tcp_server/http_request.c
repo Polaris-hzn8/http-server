@@ -14,7 +14,11 @@
 #include <stdlib.h>
 #include <string.h>
 //#include <strings.h>
+#include <sys/stat.h>
 #include "http_request.h"
+#include "../loginfo/loginfo.h"
+
+void decode_str(char* output, char* input);
 
 PHTTP_REQUEST hr_init()
 {
@@ -100,7 +104,7 @@ char* find_request_line_part(const char* start, const char* end, const char* spl
 	if (splitstr != NULL) {
 		split = memmem(start, line_size, splitstr, strlen(splitstr));
 		if (NULL == split) {
-			LOGOUT("find req_line content split failed, invalid data.");
+			LOG_OUT("find req_line content split failed, invalid data.");
 			return NULL;
 		}
 	}
@@ -116,14 +120,14 @@ bool hr_parse_req_line(PHTTP_REQUEST request, PBUFFER buffer)
 {
 	char* end = buffer_find_crlf(buffer);
 	if (NULL == end) {
-		LOGOUT("find req_line crlf failed, invalid data.");
+		LOG_OUT("find req_line crlf failed, invalid data.");
 		return false;
 	}
 
 	char* start = buffer->data_ + buffer->read_pos_;
 	int line_size = end - start;
 	if (line_size <= 0) {
-		LOGOUT("hr_parse_req_line failed line_size less than zero.");
+		LOG_OUT("hr_parse_req_line failed line_size less than zero.");
 		return false;
 	}
 
@@ -148,14 +152,14 @@ bool hr_parse_req_header(PHTTP_REQUEST request, PBUFFER buffer)
 {
 	char* end = buffer_find_crlf(buffer);
 	if (NULL == end) {
-		LOGOUT("find req_header crlf failed, invalid data.");
+		LOG_OUT("find req_header crlf failed, invalid data.");
 		return false;
 	}
 
 	char* start = buffer->data_ + buffer->read_pos_;
 	int line_size = end - start;
 	if (line_size <= 0) {
-		LOGOUT("hr_parse_req_line failed line_size less than zero.");
+		LOG_OUT("hr_parse_req_line failed line_size less than zero.");
 		return false;
 	}
 
@@ -234,7 +238,7 @@ bool hr_parse_req(PHTTP_REQUEST request, PBUFFER buffer)
 			break;
 		}
 		if (!b_ret) {
-			LOGOUT("hr_parse_req parse some steps failed, return false.");
+			LOG_OUT("hr_parse_req parse some steps failed, return false.");
 			break;
 		}
 		if (HRPS_DONE != request->_cur_hrps) {
@@ -248,4 +252,77 @@ bool hr_parse_req(PHTTP_REQUEST request, PBUFFER buffer)
 	}
 	request->_cur_hrps = HRPS_LINE;
 	return b_ret;
+}
+
+// 处理get请求
+bool hr_request_process_on_get(PHTTP_REQUEST request)
+{
+	if (0 == strlen(request->_method)) {
+		LOG_OUT("request _method is empty.");
+		return false;
+	}
+	
+	if (strcasecmp(request->_method, "get") != 0) {
+		LOG_OUT("only Get request _method can process.");
+		return false;
+	}
+
+	decode_str(request->_resurl, request->_resurl);
+
+	char* req_file = NULL;
+	if (strcmp(request->_resurl, "/") == 0)
+		req_file = "./";//folder
+	else
+		req_file = request->_resurl + 1;//file
+
+	LOG_OUT("parse_request_line req_method[%s] req_file[%s]\n", request->_method, req_file);
+
+	struct stat st;
+	int ret = stat(req_file, &st);
+	if (ret == -1) {
+		//404 no found
+		//send_http_response_head(cfd, 404, "Not Found", get_file_type(".html"), -1);
+		//send_http_response_body_file(RES_PAGE_NOT_FOUNUD, cfd);
+		return 0;
+	}
+
+	if (S_ISDIR(st.st_mode)) {
+		//将目录内容返回
+		//send_http_response_head(cfd, 200, "OK", get_file_type(".html"), -1);
+		//send_http_response_body_directory(req_file, cfd);
+	} else {
+		//将文件内容返回
+		//send_http_response_head(cfd, 200, "OK", get_file_type(req_file), st.st_size);
+		//send_http_response_body_file(req_file, cfd);
+	}
+
+	return true;
+}
+
+int hex_to_dec(char c)
+{
+	if (c >= '0' && c <= '9')
+		return c - '0';
+	if (c >= 'a' && c <= 'f')
+		return c - 'a' + 10;
+	if (c >= 'A' && c <= 'F')
+		return c - 'A' + 10;
+	return 0;
+}
+void decode_str(char* output, char* input)
+{
+	while (*input != '\0') {
+		if (input[0] == '%'
+			&& isxdigit(input[1])
+			&& isxdigit(input[2])) {
+			*output = hex_to_dec(input[1]) * 16 + hex_to_dec(input[2]);
+			input += 3;
+		}
+		else {
+			*output = *input;
+			++input;
+		}
+		++output;
+	}
+	*output = '\0';
 }

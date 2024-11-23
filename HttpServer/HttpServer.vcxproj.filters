@@ -32,10 +32,10 @@
       <Filter>tcp_server</Filter>
     </ClCompile>
     <ClCompile Include="main.c">
-      <Filter>example</Filter>
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="server.c">
-      <Filter>example</Filter>
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="tcp_server\tcp_connection.c">
       <Filter>tcp_server</Filter>
@@ -73,7 +73,7 @@
       <Filter>tcp_server</Filter>
     </ClInclude>
     <ClInclude Include="server.h">
-      <Filter>example</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="tcp_server\tcp_connection.h">
       <Filter>tcp_server</Filter>
@@ -83,6 +83,9 @@
     </ClInclude>
     <ClInclude Include="tcp_server\http_response.h">
       <Filter>tcp_server</Filter>
+    </ClInclude>
+    <ClInclude Include="loginfo\loginfo.h">
+      <Filter>logInfo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,11 +107,14 @@
     <Filter Include="buffer">
       <UniqueIdentifier>{35474f20-0003-495e-9ed8-67b94e30b83d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="example">
-      <UniqueIdentifier>{625eed1c-791f-462f-9394-79ca63cdd6a7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="tcp_server">
       <UniqueIdentifier>{ba70a277-3fae-4d81-9437-cfca39cc36b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logInfo">
+      <UniqueIdentifier>{964741b7-09b4-4310-bc7b-ad2b70e93c2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{625eed1c-791f-462f-9394-79ca63cdd6a7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

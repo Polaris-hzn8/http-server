@@ -15,9 +15,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include "server.h"
-
-#define LOGOUT(fmt, ...) do { printf(fmt, ##__VA_ARGS__); fflush(stdout); } while(0)
 
 int main(int argc, char* argv[])
 {
@@ -32,13 +29,13 @@ int main(int argc, char* argv[])
     const char* resour_path = "/home/luochenhao/web";
 
     chdir(resour_path);
-    int lfd = init_listen_fd(server_port);
-    if (lfd < 0) {
-        perror("init_listen_fd");
-        return 0;
-    }
+    //int lfd = init_listen_fd(server_port);
+    //if (lfd < 0) {
+    //    perror("init_listen_fd");
+    //    return 0;
+    //}
 
-    epoll_run(lfd);
+    //epoll_run(lfd);
     
     return 0;
 }
