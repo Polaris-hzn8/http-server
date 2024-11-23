@@ -52,8 +52,14 @@ void hr_reset(PHTTP_REQUEST request);
 void hr_destroy(PHTTP_REQUEST request);
 
 enum http_request_parse_state hr_get_parse_state(PHTTP_REQUEST request);
-bool hr_add_header(PHTTP_REQUEST request, PKVPAIR pkvpair);
+bool hr_add_header(PHTTP_REQUEST request, const char* key, const char* value);
 char* hr_get_header_value(PHTTP_REQUEST request, const char* key);
 
+// 解析请求行
 bool hr_parse_req_line(PHTTP_REQUEST request, PBUFFER buffer);
+// 解析请求头
 bool hr_parse_req_header(PHTTP_REQUEST request, PBUFFER buffer);
+// 解析请求体
+bool hr_parse_req_body(PHTTP_REQUEST request, PBUFFER buffer);
+// 解析完整请求协议
+bool hr_parse_req(PHTTP_REQUEST request, PBUFFER buffer);
