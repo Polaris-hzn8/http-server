@@ -15,8 +15,6 @@
 #include <stdbool.h>
 #include "../buffer/buffer.h"
 
-#define MAX_HEADER_NUMS 12
-
 enum http_request_parse_state
 {
 	HRPS_LINE,	//req_line
@@ -25,7 +23,8 @@ enum http_request_parse_state
 	HRPS_DONE,	//done
 };
 
-typedef struct kv_pair_st {
+typedef struct kv_pair_st
+{
 	char* _key;
 	char* _value;
 }KVPAIR, *PKVPAIR;
@@ -33,18 +32,14 @@ typedef struct kv_pair_st {
 typedef struct http_request_st
 {
 	enum http_request_parse_state _cur_hrps;
-
 	// request line
 	char* _method;
 	char* _resurl;
 	char* _version;
-
 	// request headers
 	int _header_nums;
 	PKVPAIR _headers;
-
 	// request data(post)
-
 }HTTP_REQUEST, *PHTTP_REQUEST;
 
 PHTTP_REQUEST hr_init();
@@ -62,8 +57,8 @@ bool hr_parse_req_header(PHTTP_REQUEST request, PBUFFER buffer);
 // 解析请求体
 bool hr_parse_req_body(PHTTP_REQUEST request, PBUFFER buffer);
 // 解析完整请求协议
-bool hr_parse_req(PHTTP_REQUEST request, PBUFFER buffer);
+bool hr_parse_req(PHTTP_REQUEST request, PBUFFER buffer_read, PHTTP_RESPONSE response, PBUFFER buffer_send, int socket);
 
 // 请求响应 get post
-bool hr_request_process_on_get(PHTTP_REQUEST request);
-bool hr_request_process_on_post(PHTTP_REQUEST request);
+bool hr_parse_get(PHTTP_REQUEST request, PHTTP_RESPONSE response);
+bool hr_parse_post(PHTTP_REQUEST request);

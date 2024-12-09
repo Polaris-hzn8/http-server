@@ -88,6 +88,7 @@
     <ClCompile Include="tcp_server\http_response.c" />
     <ClCompile Include="tcp_server\tcp_connection.c" />
     <ClCompile Include="tcp_server\tcp_server.c" />
+    <ClCompile Include="tcp_server\tools.c" />
     <ClCompile Include="thread\thread_pool.c" />
     <ClCompile Include="thread\workthread.c" />
   </ItemGroup>
@@ -103,6 +104,7 @@
     <ClInclude Include="tcp_server\http_response.h" />
     <ClInclude Include="tcp_server\tcp_connection.h" />
     <ClInclude Include="tcp_server\tcp_server.h" />
+    <ClInclude Include="tcp_server\tools.h" />
     <ClInclude Include="thread\thread_pool.h" />
     <ClInclude Include="thread\workthread.h" />
   </ItemGroup>

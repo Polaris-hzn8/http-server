@@ -46,6 +46,9 @@
     <ClCompile Include="tcp_server\http_response.c">
       <Filter>tcp_server</Filter>
     </ClCompile>
+    <ClCompile Include="tcp_server\tools.c">
+      <Filter>tcp_server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="reactor\channel.h">
@@ -86,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="loginfo\loginfo.h">
       <Filter>logInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="tcp_server\tools.h">
+      <Filter>tcp_server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -26,8 +26,8 @@ int buffer_write_size_remain(PBUFFER buffer);
 int buffer_read_size_remain(PBUFFER buffer);
 
 // 直接写
-int buffer_write(PBUFFER buffer, const char* data, int size);
-int buffer_write_ex(PBUFFER buffer, const char* data);
+int buffer_write_blen(PBUFFER buffer, const char* data, int size);
+int buffer_write(PBUFFER buffer, const char* data);
 
 // 接收套接字数据
 int buffer_read_from_socket(PBUFFER buffer, int fd);

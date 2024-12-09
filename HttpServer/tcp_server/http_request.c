@@ -13,12 +13,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <strings.h>
+#include <strings.h>
 #include <sys/stat.h>
+#include "tools.h"
 #include "http_request.h"
+#include "http_response.h"
 #include "../loginfo/loginfo.h"
 
-void decode_str(char* output, char* input);
+#define MAX_HEADER_NUMS 12
 
 PHTTP_REQUEST hr_init()
 {
@@ -207,30 +209,31 @@ bool hr_parse_req_header(PHTTP_REQUEST request, PBUFFER buffer)
 	return true;
 }
 
-bool hr_parse_req(PHTTP_REQUEST request, PBUFFER buffer)
+bool hr_parse_req(PHTTP_REQUEST request, PBUFFER buffer_read,
+	PHTTP_RESPONSE response, PBUFFER buffer_send, int socket)
 {
 	bool b_ret = true;
 	while (true) {
 		switch (request->_cur_hrps) {
 		case HRPS_LINE:
 			/* 解析请求行 */
-			b_ret = hr_parse_req_line(request, buffer);
+			b_ret = hr_parse_req_line(request, buffer_read);
 			break;
 		case HRPS_HEAD:
 			/* 解析请求头 */
-			b_ret = hr_parse_req_header(request, buffer);
+			b_ret = hr_parse_req_header(request, buffer_read);
 			break;
 		case HRPS_BODY:
+			/* 解析请求体 */
 			/**
-			 * 解析请求体
-			 * 只处理Get的请求（无请求数据）
+			 * REM 只处理Get请求（无请求数据）
 			 * 客户端向服务器发送的Post请求，数据块格式主要有4种
 			 * 若需要处理该请求：
 			 * 1.需要编写这4中数据对应的解析方式
 			 * 2.根据客户端请求协议的content-length与content-type
 			 * 3.调用对应的解析函数进行处理
 			 */
-			b_ret = hr_parse_req_body(request, buffer);
+			b_ret = hr_parse_req_body(request, buffer_read);
 			break;
 		case HRPS_DONE:
 			break;
@@ -238,16 +241,16 @@ bool hr_parse_req(PHTTP_REQUEST request, PBUFFER buffer)
 			break;
 		}
 		if (!b_ret) {
-			LOG_OUT("hr_parse_req parse some steps failed, return false.");
+			/* 请求解析异常 */
+			LOG_OUT("hr_parse_req parse step[%d] failed.", request->_cur_hrps);
 			break;
 		}
-		if (HRPS_DONE != request->_cur_hrps) {
+		if (HRPS_DONE == request->_cur_hrps) {
 			/* 请求解析结束 */
-			// 根据解析的原始数据对请求进行响应
-
-			// 组织响应数据并发送回客户端
-
-			break;
+			// 准备响应数据
+			hr_parse_get(request, response);
+			// 返回响应数据
+			hres_send_data(response, buffer_send, socket);
 		}
 	}
 	request->_cur_hrps = HRPS_LINE;
@@ -255,7 +258,7 @@ bool hr_parse_req(PHTTP_REQUEST request, PBUFFER buffer)
 }
 
 // 处理get请求
-bool hr_request_process_on_get(PHTTP_REQUEST request)
+bool hr_parse_get(PHTTP_REQUEST request, PHTTP_RESPONSE response)
 {
 	if (0 == strlen(request->_method)) {
 		LOG_OUT("request _method is empty.");
@@ -281,48 +284,35 @@ bool hr_request_process_on_get(PHTTP_REQUEST request)
 	int ret = stat(req_file, &st);
 	if (ret == -1) {
 		//404 no found
-		//send_http_response_head(cfd, 404, "Not Found", get_file_type(".html"), -1);
-		//send_http_response_body_file(RES_PAGE_NOT_FOUNUD, cfd);
-		return 0;
+		response->_state_code = HRSC_NotFound;
+		strcpy(response->_statu_desc, "Desc: Not Found");
+
+		hres_add_header(response, "Content-type", get_file_type(".html"));
+		
+		response->_send_hres_func = hres_send_file;
+
+		strcpy(response->_file_name, "404.html");
+
+		return true;
 	}
+
+	response->_state_code = HRSC_OK;
+	strcpy(response->_statu_desc, "Desc: OK");
+	strcpy(response->_file_name, req_file);
 
 	if (S_ISDIR(st.st_mode)) {
 		//将目录内容返回
-		//send_http_response_head(cfd, 200, "OK", get_file_type(".html"), -1);
-		//send_http_response_body_directory(req_file, cfd);
+		hres_add_header(response, "Content-type", get_file_type(".html"));
+		response->_send_hres_func = hres_send_directory;
 	} else {
 		//将文件内容返回
-		//send_http_response_head(cfd, 200, "OK", get_file_type(req_file), st.st_size);
-		//send_http_response_body_file(req_file, cfd);
+		char file_size[64];
+		sprintf("%ld", st.st_size);
+		hres_add_header(response, "Content-type", get_file_type(req_file));
+		hres_add_header(response, "Content-length", file_size);
+		response->_send_hres_func = hres_send_file;
 	}
 
 	return true;
 }
 
-int hex_to_dec(char c)
-{
-	if (c >= '0' && c <= '9')
-		return c - '0';
-	if (c >= 'a' && c <= 'f')
-		return c - 'a' + 10;
-	if (c >= 'A' && c <= 'F')
-		return c - 'A' + 10;
-	return 0;
-}
-void decode_str(char* output, char* input)
-{
-	while (*input != '\0') {
-		if (input[0] == '%'
-			&& isxdigit(input[1])
-			&& isxdigit(input[2])) {
-			*output = hex_to_dec(input[1]) * 16 + hex_to_dec(input[2]);
-			input += 3;
-		}
-		else {
-			*output = *input;
-			++input;
-		}
-		++output;
-	}
-	*output = '\0';
-}

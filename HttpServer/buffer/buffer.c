@@ -84,7 +84,7 @@ int buffer_read_size_remain(PBUFFER buffer)
 	return buffer->write_pos_ - buffer->read_pos_;
 }
 
-int buffer_write(PBUFFER buffer, const char* data, int size)
+int buffer_write_blen(PBUFFER buffer, const char* data, int size)
 {
 	if (buffer == NULL || data == NULL || size <= 0) {
 		LOG_OUT("buffer_write failed, invalid data.");
@@ -99,10 +99,10 @@ int buffer_write(PBUFFER buffer, const char* data, int size)
 	return 0;
 }
 
-int buffer_write_ex(PBUFFER buffer, const char* data)
+int buffer_write(PBUFFER buffer, const char* data)
 {
 	int size = strlen(data);
-	return buffer_write(buffer, data, size);
+	return buffer_write_blen(buffer, data, size);
 }
 
 int buffer_read_from_socket(PBUFFER buffer, int fd)
